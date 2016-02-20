@@ -22,7 +22,6 @@ branch b(br_taken, rs1, rs2, br_func);
 mux2 alu_op(alu_in1, rs2, ctl_data_out, alu_op_sel);
 mux4 reg_in(rd, alu_out, ctl_data_out, lsu_reg_out, 32'b0, reg_in_sel);
 
-icache i(iaddr, inst);
-dcache d(clk, mem_wr, mem_addr, mem_out, mem_in);
+memory m(clk, mem_wr, iaddr, inst, mem_addr, mem_out, mem_in);
 
 endmodule
