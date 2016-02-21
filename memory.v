@@ -19,9 +19,4 @@ begin
         mem[daddr] = data_in;
 end
 
-initial
-begin
-	$readmemh("mem.hex", mem);
-end
-
 endmodule
