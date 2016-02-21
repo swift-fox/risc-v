@@ -13,7 +13,7 @@ reg out;
 `define ltu 3'b110
 `define geu 3'b111
 
-always @ (func, in0, in1)
+always @ (*)
 begin
     case(func)
     `eq:  out = (in0 == in1);

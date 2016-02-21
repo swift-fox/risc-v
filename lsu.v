@@ -35,7 +35,7 @@ assign mask_b = 64'hff << shift;
 assign mask_h = 64'hffff << shift;
 assign mask_w = 64'hffffffff << shift;
 
-always @ (func, addr, byte_index, reg_in, mem_in)
+always @ (*)
 begin
     case(func)
     `lb:  reg_out = {{24{sh_r[7]}}, sh_r[7:0]};

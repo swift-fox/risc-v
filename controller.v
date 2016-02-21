@@ -78,7 +78,7 @@ reg [3:0] alu_func, lsu_func;
 reg [2:0] br_func;
 reg [31:0] data_out;
 
-always @ (inst)
+always @ (*)
 begin
     /* Reset important signals */
     next_inst = `ni_next;
@@ -140,6 +140,8 @@ begin
         data_out = pc + 4;
         next_inst = `ni_jalr;
     end
+	default:
+		reg_wr = 0;
 	endcase
 end
 

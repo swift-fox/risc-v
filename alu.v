@@ -17,7 +17,7 @@ reg [31:0] out;
 `define _or  4'b0110
 `define _and 4'b0111
 
-always @ (func, in0, in1)
+always @ (*)
 begin
     case(func)
     `add:  out = in0 + in1;
