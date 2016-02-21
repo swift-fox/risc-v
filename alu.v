@@ -27,7 +27,7 @@ begin
     `sltu: out = in0 < in1;
     `_xor: out = in0 ^ in1;
     `srl:  out = in0 >> in1;
-    `sra:  out = in0 >>> in1;
+    `sra:  out = $signed(in0) >>> in1;
     `_or:  out = in0 | in1;
     `_and: out = in0 & in1;
     default: out = 32'b0;
