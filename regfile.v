@@ -7,8 +7,8 @@ output [31:0] out1, out2;
 
 reg [31:0] regs [1:31];
 
-assign out1 = sel1 ? regs[rs1] : 32'b0;
-assign out2 = sel2 ? regs[rs2] : 32'b0;
+assign out1 = rs1 ? regs[rs1] : 32'b0;
+assign out2 = rs2 ? regs[rs2] : 32'b0;
 
 always @ (negedge clk)
 begin

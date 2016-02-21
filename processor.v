@@ -16,7 +16,7 @@ controller c(_reset, clk, iaddr, inst, br_taken, rd_sel, rs1_sel, rs2_sel, reg_w
 
 alu a(alu_out, rs1, alu_in1, alu_func);
 regfile r(clk, reg_wr, rs1, rs2, rd, rs1_sel, rs2_sel, rd_sel);
-lsu l(lsu_func, rs1, ctl_data_out, lsu_reg_out, rs2, mem_out, mem_in);
+lsu l(lsu_func, rs1, ctl_data_out[11:0], lsu_reg_out, rs2, mem_addr, mem_out, mem_in);
 branch b(br_taken, rs1, rs2, br_func);
 
 mux2 alu_op(alu_in1, rs2, ctl_data_out, alu_op_sel);

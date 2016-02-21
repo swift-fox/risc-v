@@ -18,9 +18,6 @@ output [1:0] reg_in_sel;
 output [3:0] alu_func, lsu_func;
 output [2:0] br_func;
 
-reg [31:0] iaddr;
-reg [31:0] data_out;
-
 /**
     Break down the instruction into parts.
 */
@@ -38,11 +35,11 @@ assign funct3 = inst[14:12];
 assign funct7 = inst[31:25];
 
 // Extract the immediate number from different instruction types
-assign imm_i  = {21{inst[31]}, inst[30:20]};
-assign imm_s  = {21{inst[31]}, inst[30:25], inst[11:7]};
-assign imm_sb = {20{inst[31]}, inst[7], inst[30:25], inst[11:8], 1'b0};
+assign imm_i  = {{21{inst[31]}}, inst[30:20]};
+assign imm_s  = {{21{inst[31]}}, inst[30:25], inst[11:7]};
+assign imm_sb = {{20{inst[31]}}, inst[7], inst[30:25], inst[11:8], 1'b0};
 assign imm_u  = {inst[31:12], 12'b0};
-assign imm_uj = {12{inst[31]}, inst[19:12], inst[20], inst[30:21], 1'b0};
+assign imm_uj = {{12{inst[31]}}, inst[19:12], inst[20], inst[30:21], 1'b0};
 assign shamt  = {27'b0, inst[24:20]};
 
 /**
@@ -79,6 +76,7 @@ reg alu_op_sel;
 reg [1:0] reg_in_sel, next_inst;
 reg [3:0] alu_func, lsu_func;
 reg [2:0] br_func;
+reg [31:0] data_out;
 
 always @ (inst)
 begin
@@ -88,7 +86,7 @@ begin
     mem_wr = 0;
     
     /* Set up controlling signals */
-    case(opocde)
+    case(opcode)
     `op_imm: begin
         reg_in_sel = `reg_in_alu;
         alu_op_sel = `alu_op_ctl;
@@ -96,7 +94,7 @@ begin
         if(funct3 == `func_sr)  // srli, srai
             alu_func = {funct7[5], funct3};
         else    // addi, slti, sltiu, xori, ori, andi, slli
-            alu_func = {0, funct3};
+            alu_func = {1'b0, funct3};
 
         if(funct3 == `func_sr || funct3 == `func_sl)    // slli, srli, srai
             data_out = shamt;
@@ -130,35 +128,40 @@ begin
     end
     `op_auipc: begin
         reg_in_sel = `reg_in_ctl;
-        data_out = iaddr + imm_u;
+        data_out = pc + imm_u;
     end
     `op_jal: begin
         reg_in_sel = `reg_in_ctl;
-        data_out = iaddr + 4;
+        data_out = pc + 4;
         next_inst = `ni_jal;
     end
     `op_jalr: begin
         reg_in_sel = `reg_in_ctl;
-        data_out = iaddr + 4;
+        data_out = pc + 4;
         next_inst = `ni_jalr;
     end
+	endcase
 end
 
 /**
     Program counter. Adjusts according to the instruction.
 */
+reg [31:0] pc;
+
+assign iaddr = pc[31:2];
+
 always @ (clk)
 begin
     if(clk)
     begin
         if(~_reset)
-            iaddr = 32'b0;
+            pc = 32'b0;
         else
             case(next_inst)
-            `ni_next: iaddr = iaddr + 4;
-            `ni_br:   iaddr = br_taken ? iaddr + imm_sb : iaddr + 4;
-            `ni_jal:  iaddr = {iaddr[31:21], imm_uj[20:0]};
-            `ni_jalr: iaddr = data_in + imm_i;
+            `ni_next: pc = pc + 4;
+            `ni_br:   pc = br_taken ? pc + imm_sb : pc + 4;
+            `ni_jal:  pc = {pc[31:21], imm_uj[20:0]};
+            `ni_jalr: pc = data_in + imm_i;
             endcase
     end
 end
