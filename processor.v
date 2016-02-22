@@ -12,7 +12,7 @@ wire [2:0] br_func;
 wire [63:0] mem_out, mem_in;
 
 controller c(_reset, clk, iaddr, inst, br_taken, rd_sel, rs1_sel, rs2_sel, reg_wr, mem_wr,
-    alu_op_sel, reg_in_sel, alu_func, lsu_func, br_func, ctl_data_in, ctl_data_out);
+    alu_op_sel, reg_in_sel, alu_func, lsu_func, br_func, rs1, ctl_data_out);
 
 alu a(alu_out, rs1, alu_in1, alu_func);
 regfile r(clk, reg_wr, rs1, rs2, rd, rs1_sel, rs2_sel, rd_sel);

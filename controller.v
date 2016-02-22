@@ -160,10 +160,10 @@ begin
             pc = 32'b0;
         else
             case(next_inst)
-            `ni_next: pc = pc + 4;
+            default:  pc = pc + 4;
             `ni_br:   pc = br_taken ? pc + imm_sb : pc + 4;
-            `ni_jal:  pc = {pc[31:21], imm_uj[20:0]};
-            `ni_jalr: pc = data_in + imm_i;
+            `ni_jal:  pc = pc + imm_uj;
+            `ni_jalr: pc = data_in + imm_i & 32'hfffffffe;
             endcase
     end
 end
